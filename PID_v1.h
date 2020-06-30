@@ -1,6 +1,6 @@
 #ifndef PID_v1_h
 #define PID_v1_h
-#define LIBRARY_VERSION	1.2.1
+#define LIBRARY_VERSION	1.1.1
 
 class PID
 {
@@ -51,6 +51,9 @@ class PID
     void SetSampleTime(int);              // * sets the frequency, in Milliseconds, with which 
                                           //   the PID calculation is performed.  default is 100
 										  
+    void SetLastInput(double);		  // * Sets the last input for when the input counter is reset
+
+    double GetLastInput();		  // * Gets the last input for calculations when the input counter is reset
 										  
 										  
   //Display functions ****************************************************************

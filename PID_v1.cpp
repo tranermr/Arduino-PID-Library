@@ -1,8 +1,8 @@
 /**********************************************************************************************
- * Arduino PID Library - Version 1.2.1
+ * Arduino PID Library - Version 1.1.1
  * by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
  *
- * This Library is licensed under the MIT License
+ * This Library is licensed under a GPLv3 License
  **********************************************************************************************/
 
 #if ARDUINO >= 100
@@ -33,7 +33,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
     PID::SetControllerDirection(ControllerDirection);
     PID::SetTunings(Kp, Ki, Kd, POn);
 
-    lastTime = millis()-SampleTime;
+    lastTime = 1000*micros()-SampleTime;
 }
 
 /*Constructor (...)*********************************************************
@@ -58,7 +58,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
 bool PID::Compute()
 {
    if(!inAuto) return false;
-   unsigned long now = millis();
+   unsigned long now = 1000*micros();
    unsigned long timeChange = (now - lastTime);
    if(timeChange>=SampleTime)
    {
@@ -92,6 +92,22 @@ bool PID::Compute()
 	    return true;
    }
    else return false;
+}
+
+/* SetLastInput()**************************************************************
+ *	Manually reset last input for speed estimate corretion
+ ******************************************************************************/
+void PID::SetLastInput(double manualInput)
+{
+   lastInput = manualInput;
+}
+
+/* GetLastInput()**************************************************************
+ *	Get last input for compensation calculations when resetting position counter
+ ******************************************************************************/
+double PID::GetLastInput()
+{
+   return lastInput;
 }
 
 /* SetTunings(...)*************************************************************
@@ -211,7 +227,7 @@ void PID::SetControllerDirection(int Direction)
    controllerDirection = Direction;
 }
 
-/* Status Funcions*************************************************************
+/* Status Functions*************************************************************
  * Just because you set the Kp=-1 doesn't mean it actually happened.  these
  * functions query the internal state of the PID.  they're here for display
  * purposes.  this are the functions the PID Front-end uses for example
